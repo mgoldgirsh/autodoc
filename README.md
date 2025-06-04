@@ -1,7 +1,8 @@
 > User Notes: \
 > this file was generated with `autodoc` !!! \
-> to use, clone the repo, install requirements, and run `python3 main.py`
-
+> to use, clone the repo, install requirements, and run `python3 main.py` \
+> Demo: 
+![Demo](demo.mp4)
 
 # Overall Summary: autodocs
 

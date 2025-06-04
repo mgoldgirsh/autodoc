@@ -2,7 +2,7 @@
 > this file was generated with `autodoc` !!! \
 > to use, clone the repo, install requirements, and run `python3 main.py` \
 > Demo: 
-![Demo](demo.mp4)
+![demo.mp4](Demo)
 
 # Overall Summary: autodocs
 

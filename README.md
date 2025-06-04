@@ -2,107 +2,62 @@
 > this file was generated with `autodoc` !!! \
 > to use, clone the repo, install requirements, and run `python3 main.py`
 
+
 # Overall Summary: autodocs
 
 ## File Summary: config.py
-**config.py File Summary**
-=====================================
+**config.py Summary**
+=====================
 
-The `config.py` file is responsible for managing the configuration of the autodoc program. Here are its key features:
+Here are the most important features of the `config.py` file:
 
-* **Config File Handling**: The file reads and writes to a JSON configuration file stored in the package directory, ensuring that the config is persisted across runs.
-* **Configuration Loading**: The `read_config()` function loads the configuration from the JSON file into memory, allowing for easy access and modification.
-* **Default Directory Creation**: If the specified memory location in the config is empty or None, a default directory (`/tmp/autodoc-snapshots`) is created.
-* **Key-Value Configuration Management**: The `write_config()` function allows updating the configuration with new key-value pairs, returning the updated config dictionary.
+* **Config File Loading**: The file reads a JSON configuration file named "config.json" from the same directory as the script.
+* **Default Memory Location**: If the "memory_location" key in the config is empty or None, it defaults to "/tmp/autodoc-snapshots".
+* **Memory Location Creation**: Before writing the config, the script creates the default memory location if it doesn't exist.
+* **Config File Writing**: The file writes updates to the config file using the `json.dumps` method for pretty-printing.
+* **Global Config Access**: The `read_config` function returns the loaded config dictionary, making it accessible globally.
 
 ## File Summary: agent.py
-### Autodoc LLM Agent Summary
+`agent.py`:
 
-The Autodoc LLM Agent is a Python class designed to summarize files and directories using an OpenAI compliant LLM (Large Language Model).
-
-#### Key Features:
-
-*   **File Summarization**: The `summarize_file` method takes file contents as input and uses the LLM to generate a summary.
-*   **Directory Summarization**: The `summarize_directory` method takes directory README content as input and generates a summary using the LLM.
-*   **Configurable Model**: The agent is initialized with a configuration dictionary that specifies the LLM model, provider, and base URL.
-*   **LLM Integration**: The agent uses the LangChain library to integrate with OpenAI's LLM services.
-
-#### Example Usage:
-
-To use the Autodoc LLM Agent, you can instantiate it with a configuration dictionary and then call the `summarize_file` or `summarize_directory` methods. For example:
-```python
-agent = AutodocLLMAgent(config={"llm_model": "bert-base-uncased", "llm_provider": "ollama", "llm_baseurl": "https://api.llamaverse.com"})
-
-file_contents = """
-import utils
-
-if __name__ == "__main__":
-    utils.spin_up()
-    print("hello world")
-"""
-
-summary = agent.summarize_file(file_contents)
-print(summary)
-
-directory_readme = """
-You are a professional software engineer. You can quickly understand the essential parts of files that are required to build software.
-
-Example of Flow:
-
-Given the Following File 
-`main.py`:
-```
-import utils
-
-if __name__ == "__main__":
-    utils.spin_up()
-    print("hello world")
-```
-
-A Valid Output would look like
-- the main module uses the utils module to spin up some processes
-- after spin up the main prints "hello world"
-"""
-
-directory_summary = agent.summarize_directory(directory_readme)
-print(directory_summary)
-```
+* Creates an OpenAI compliant LLM agent for autodocumentation purposes.
+* Can be initialized with a configuration dictionary from `config.json`.
+* Supports two LLM providers: Ollama and other (default).
+* Provides methods to summarize files and directories using the LLM.
+	+ `_summarize_file_system_prompt`: generates a prompt for summarizing file contents.
+	+ `_summarize_directory_system_prompt`: generates a prompt for summarizing directory contents.
+	+ `summarize_file`: uses the LLM to generate a summary of file contents.
+	+ `summarize_directory`: uses the LLM to generate a summary of directory contents.
 
 ## File Summary: autodoc.py
 Here is a summary of the `autodoc.py` file in markdown format:
 
-# Autodoc Functionality
+*   **Autodoc Functionality**: The autodoc functionality generates auto README.md files for a provided repository (recursively).
+*   **Command Line Interface**: The script has a command line interface that allows users to specify a repository, restore the README.md documents to their original state, or delete all the recursive README.md docs.
+*   **Memory-Based Configuration**: The autodoc functionality uses memory-based configuration to store the summary of each directory/subdirectory in the repository.
+*   **LLM Agent**: The script uses an LLM (Large Language Model) agent to summarize files and generate summaries for directories.
+*   **Gitignore Handling**: The script handles gitignore files by ignoring files and directories that match the specified ignore regex.
+
+## File Summary: main.py
+`main.py` Summary
+=================
 ### Overview
 
-The `autodoc.py` file contains the main functionality for autodoc, which generates auto README.md files for a provided repository (recursively).
+*   Runs the autodoc functionality from command line using `main.py`.
 
 ### Key Features
 
-*   **Snapshotting**: Takes a snapshot of the current README document configuration and saves it in the location specified by the config.
-*   **Reading Snapsshots**: Reads the snapshot and returns the list of [filepath, contents] that needs to be rewritten.
-*   **Generating Docs**: Generates README documents for every directory in the repository provided. If a README document already exists, its content is appended to it.
-
-### Command Line Interface
-
-The `autodoc.py` file also includes a command line interface setup using the `argparse` library. The CLI provides options for:
-
-*   **Autodoc**: Autogenerates auto README.md files for a provided repository (recursively).
-*   **Restore Docs**: Reverts README document configuration for a repository based off the autodocs memory.
-*   **Delete Docs**: Deletes all the README.md docs at a specified repository (recursively).
-
-## File Summary: main.py
-**Summary of `main.py`**
-
-*   **Autodoc Functionality**: The main module runs the autodoc functionality from the command line.
-*   **Configuration Loading**: The program loads configuration settings using the `read_config()` function.
-*   **CLI Argument Setup**: It sets up CLI arguments for the autodoc functionality using the `cli_setup()` function from the `autodoc` module.
-*   **Autodoc Agent Creation**: An instance of the `AutodocLLMAgent` class is created with the loaded configuration settings.
-*   **Autodoc Action Execution**: Depending on the CLI arguments provided, it either restores documents (`restore_docs()`), deletes documents (`delete_docs()`), or constructs documents using the autodoc agent and repository (`construct_docs()`) for the given repository.
+*   **Config Loading**: Loads configuration from `config.py` using the `read_config()` function.
+*   **CLI Argument Parsing**: Parses command-line arguments using `autodoc.cli_setup()`.
+*   **Autodoc Agent Creation**: Creates an instance of `AutodocLLMAgent` with the loaded configuration.
+*   **Autodoc Operation**: Performs one of three autodoc operations based on the parsed CLI arguments:
+    *   Restore: Restores documentation from a specified repository using `autodoc.restore_docs()`.
+    *   Delete: Deletes documentation from a specified repository using `autodoc.delete_docs()`.
+    *   Construct: Constructs documentation for an existing agent using `autodoc.construct_docs()`.
 
 ## File Summary: requirements.txt
-**Key Components of `requirements.txt`**
+**File Summary**
 
-* Lists required Python packages for the project:
-	+ `langchain`: a library used for natural language processing tasks
-	+ `langchain-ollama`: a specific component of LangChain, used for text generation and modeling
-	+ `termcolor`: a library used to color terminal output for improved readability
+*   **`requirements.txt`**: A text file specifying the required dependencies for a project, including `langchain`, `langchain-ollama`, and `termcolor`. These libraries are necessary to run the software.
+
+    This summary would be added to a README.md file.

@@ -1,0 +1,20 @@
+{
+    "ignore_paths": [
+        ".git", 
+        ".gitignore",
+        ".dockerignore",
+        "README.md",  
+
+        "__pycache__", 
+        ".venv",
+        "venv", 
+
+        "vendor",
+        "go.mod",
+        "go.sum"
+    ],
+    "llm_model": "llama3.2",
+    "llm_provider": "ollama",
+    "llm_baseurl": "http://localhost:11434",
+    "memory_location": "/tmp/autodoc-snapshots"
+}
